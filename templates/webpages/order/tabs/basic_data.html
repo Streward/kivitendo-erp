@@ -113,7 +113,8 @@
               <th class="listheading" style='display:none'></th>
               <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/updown.png" alt="[%- LxERP.t8('reorder item') %]"></th>
               <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/close.png" alt="[%- LxERP.t8('delete item') %]"></th>
-              <th class="listheading" nowrap >[%- 'Part'         | $T8 %] </th>
+              <th class="listheading" nowrap width="15">[%- 'Partnumber'  | $T8 %] </th>
+              <th class="listheading" nowrap           >[%- 'Description'  | $T8 %] </th>
               <th class="listheading" nowrap width="5" >[%- 'Qty'          | $T8 %] </th>
               <th class="listheading" nowrap width="5" >[%- 'Price Factor' | $T8 %] </th>
               <th class="listheading" nowrap width="5" >[%- 'Unit'         | $T8 %] </th>
@@ -193,29 +194,6 @@ function delete_order_item_row(clicked) {
   recalc_amounts_and_taxes()
 }
 
-function set_item_values(event) {
-  var cv_id = $('#order_[%- cv_id %]').val();
-  var parts_id = $(event.target).val();
-  var row = $(event.target).parents("tr").first();
-
-  var item_id_dom = $(row).find('[name="order.orderitems[+].id"]');
-  var qty_dom = $(row).find('[id^="order_orderitems"][id$="qty_as_number"]');
-  var unit_dom = $(row).find('[id^="order_orderitems"][id$="unit"]');
-  var sellprice_dom = $(row).find('[id^="order_orderitems"][id$="sellprice_as_number"]');
-  var discount_dom = $(row).find('[id^="order_orderitems"][id$="discount_as_percent"]');
-
-  var data = $('#order_form').serialize();
-  data += '&action=Order/set_item_values';
-  data += '&type=' + $('#type').val();
-  data += '&item_id=' + item_id_dom.val();
-  data += '&qty_dom_id=' + qty_dom.attr("id");
-  data += '&unit_dom_id=' + unit_dom.attr("id");
-  data += '&sellprice_dom_id=' + sellprice_dom.attr("id");
-  data += '&discount_dom_id=' + discount_dom.attr("id");
-
-  $.post("controller.pl", data, kivi.eval_json_result);
-}
-
 function recalc_amounts_and_taxes() {
   var data = $('#order_form').serialize();
   data += '&action=Order/recalc_amounts_and_taxes';
@@ -231,8 +209,8 @@ function display_linetotal(item_id, amount) {
 
 $(function(){
   $('#order_[%- cv_id %]').change(reload_cv_dependend_selections);
-  $('[id^="order_orderitems"][id$="parts_id"]').change(set_item_values);
   $('#add_item_parts_id').on('set_item:PartPicker', function(e,o) { $('#add_item_sellprice_as_number').val(kivi.format_amount(o.sellprice, -2)) });
+  $('#add_item_parts_id').on('set_item:PartPicker', function(e,o) { $('#add_item_description').val(o.description) });
   $('.add_item_input').keydown(function(event) {
     if(event.keyCode == 13) {
       event.preventDefault();

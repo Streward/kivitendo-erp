@@ -6,6 +6,7 @@
 <tr valign="top" class="listrow">
   <td style='display:none'>
     [% L.hidden_tag("order.orderitems[+].id", ITEM.id, id='item_' _ ITEM.id, ) %]
+    [% L.hidden_tag("order.orderitems[].parts_id", ITEM.parts_id) %]
   </td>
   <td align="center" class="dragdrop">
     <img src="image/updown.png" alt="[%- LxERP.t8('reorder item') %]">
@@ -15,9 +16,12 @@
                      LxERP.t8("X"),
                      confirm=LxERP.t8("Are you sure?")) %]
   <td>
-    [% L.part_picker("order.orderitems[].parts_id",
-                     ITEM.part,
-                     style='width: 300px') %]
+    [% HTML.escape(ITEM.part.partnumber) %]
+  </td>
+  <td>
+    [% L.input_tag("order.orderitems[].description",
+                   ITEM.description,
+                   style='width: 300px') %]
   </td>
   <td>
     [%- L.input_tag("order.orderitems[].qty_as_number",

@@ -153,56 +153,15 @@ sub action_add_item {
     ->append('#row_table_id tbody', $row_as_html)
     ->val('#add_item_parts_id', '')
     ->val('#add_item_parts_id_name', '')
+    ->val('#add_item_description', '')
     ->val('#add_item_qty_as_number', '')
     ->val('#add_item_sellprice_as_number', '')
     ->val('#add_item_discount_as_percent', '')
-    ->focus('#add_item_parts_id_name')
-    ->off('[id^="order_orderitems"][id$="parts_id"]', 'change', 'set_item_values')
-    ->on('[id^="order_orderitems"][id$="parts_id"]', 'change', 'set_item_values');
+    ->focus('#add_item_parts_id_name');
 
   $self->_js_redisplay_amounts_and_taxes;
   $self->js->render($self);
 }
-
-sub action_set_item_values {
-  my ($self) = @_;
-
-  my $is_new  = $::form->{item_id} =~ m{^new_};
-  my $item_id = $::form->{item_id};
-
-  my $item      = first {$_->id   eq $::form->{item_id}} @{$self->order->items};
-  my $form_attr = first {$_->{id} eq $::form->{item_id}} @{ $::form->{order}->{orderitems} };
-
-  delete $form_attr->{id};
-
-  my $part = SL::DB::Part->new(id => $form_attr->{parts_id})->load;
-
-  my $cv_class    = "SL::DB::" . ucfirst($self->cv);
-  my $cv_discount = $::form->{cv_id}? $cv_class->new(id => $::form->{$self->cv . '_id'})->load->discount :0.0;
-
-
-  my %new_attr;
-  $new_attr{sellprice} = $part->sellprice  if ! $form_attr->{sellprice_as_number};
-  $new_attr{discount}  = $cv_discount      if ! $form_attr->{discount_as_percent};
-  $new_attr{unit}      = $part->unit       if ! $form_attr->{unit};
-  $new_attr{qty}       = 1.0               if ! $form_attr->{qty_as_number};
-
-  $item->assign_attributes(%new_attr);
-
-
-  $self->_recalc();
-
-  $self->js
-    ->val( '#' . $::form->{qty_dom_id},       $item->qty_as_number)
-    ->val( '#' . $::form->{unit_dom_id},      $item->unit)
-    ->val( '#' . $::form->{sellprice_dom_id}, $item->sellprice_as_number)
-    ->val( '#' . $::form->{discount_dom_id},  $item->discount_as_percent)
-    ->run('display_linetotal', $::form->{item_id}, $::form->format_amount(\%::myconfig, $item->{linetotal}, -2));
-
-  $self->_js_redisplay_amounts_and_taxes;
-  $self->js->render($self);
-}
-
 
 sub action_recalc_amounts_and_taxes {
   my ($self) = @_;
