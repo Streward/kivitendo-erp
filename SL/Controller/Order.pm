@@ -131,16 +131,16 @@ sub action_add_item {
   $item->assign_attributes(%$form_attr);
 
   my $part        = SL::DB::Part->new(id => $form_attr->{parts_id})->load;
-  my $cv_class    = "SL::DB::" . ucfirst($self->cv);
-  my $cv_discount = $::form->{$self->cv . '_id'}? $cv_class->new(id => $::form->{$self->cv . '_id'})->load->discount :0.0;
+  my $cv_discount = $self->order->customer? $self->order->customer->discount : 0.0;
 
   my %new_attr;
-  $new_attr{id}        = join('_', 'new', Time::HiRes::gettimeofday(), int rand 1000000000000);
-  $new_attr{part}      = $part;
-  $new_attr{qty}       = 1.0               if ! $item->{qty};
-  $new_attr{unit}      = $part->unit;
-  $new_attr{sellprice} = $part->sellprice  if ! $item->{sellprice};
-  $new_attr{discount}  = $cv_discount      if ! $item->{discount};
+  $new_attr{id}          = join('_', 'new', Time::HiRes::gettimeofday(), int rand 1000000000000);
+  $new_attr{part}        = $part;
+  $new_attr{description} = $part->description if ! $item->{description};
+  $new_attr{qty}         = 1.0                if ! $item->{qty};
+  $new_attr{unit}        = $part->unit;
+  $new_attr{sellprice}   = $part->sellprice   if ! $item->{sellprice};
+  $new_attr{discount}    = $cv_discount       if ! $item->{discount};
   $item->assign_attributes(%new_attr);
 
   $self->order->add_items($item);
