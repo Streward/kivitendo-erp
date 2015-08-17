@@ -107,30 +107,34 @@
   <table width="100%">
     <tr>
       <td>
-        <table id="row_table_id" width="100%">
-          <thead>
-            <tr class="listheading">
-              <th class="listheading" style='display:none'></th>
-              <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/updown.png" alt="[%- LxERP.t8('reorder item') %]"></th>
-              <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/close.png" alt="[%- LxERP.t8('delete item') %]"></th>
-              <th class="listheading" nowrap width="15">[%- 'Partnumber'  | $T8 %] </th>
-              <th class="listheading" nowrap           >[%- 'Description'  | $T8 %] </th>
-              <th class="listheading" nowrap width="5" >[%- 'Qty'          | $T8 %] </th>
-              <th class="listheading" nowrap width="5" >[%- 'Price Factor' | $T8 %] </th>
-              <th class="listheading" nowrap width="5" >[%- 'Unit'         | $T8 %] </th>
-              <th class="listheading" nowrap width="15">[%- 'Price'        | $T8 %] </th>
-              <th class="listheading" nowrap width="5" >[%- 'Discount'     | $T8 %] </th>
-              <th class="listheading" nowrap width="10">[%- 'Extended'     | $T8 %] </th>
-            </tr>
-          </thead>
 
-          <tbody>
-            [%- FOREACH item = SELF.order.items_sorted %]
-              [%- PROCESS order/tabs/_row.html ITEM=item %]
-            [%- END %]
-          </tbody>
+        <div id="row_table_scroll_id" style="overflow-y: scroll; height: 500px;">
+          <table id="row_table_id" width="100%">
+            <thead>
+              <tr class="listheading">
+                <th class="listheading" style='display:none'></th>
+                <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/updown.png" alt="[%- LxERP.t8('reorder item') %]"></th>
+                <th class="listheading" style='text-align:center' nowrap width="1"><img src="image/close.png" alt="[%- LxERP.t8('delete item') %]"></th>
+                <th class="listheading" nowrap width="15">[%- 'Partnumber'  | $T8 %] </th>
+                <th class="listheading" nowrap           >[%- 'Description'  | $T8 %] </th>
+                <th class="listheading" nowrap width="5" >[%- 'Qty'          | $T8 %] </th>
+                <th class="listheading" nowrap width="5" >[%- 'Price Factor' | $T8 %] </th>
+                <th class="listheading" nowrap width="5" >[%- 'Unit'         | $T8 %] </th>
+                <th class="listheading" nowrap width="15">[%- 'Price'        | $T8 %] </th>
+                <th class="listheading" nowrap width="5" >[%- 'Discount'     | $T8 %] </th>
+                <th class="listheading" nowrap width="10">[%- 'Extended'     | $T8 %] </th>
+              </tr>
+            </thead>
 
-        </table>
+            <tbody>
+              [%- FOREACH item = SELF.order.items_sorted %]
+                [%- PROCESS order/tabs/_row.html ITEM=item %]
+              [%- END %]
+            </tbody>
+
+          </table>
+        </div>
+
       </td>
     </tr>
 
@@ -206,6 +210,9 @@ function display_linetotal(item_id, amount) {
   $('#item_' + item_id).parents("tr").first().find('[name="linetotal"]').html(amount);
 }
 
+function row_table_scroll_down() {
+  $('#row_table_scroll_id').scrollTop($('#row_table_scroll_id')[0].scrollHeight);
+}
 
 $(function(){
   $('#order_[%- cv_id %]').change(reload_cv_dependend_selections);

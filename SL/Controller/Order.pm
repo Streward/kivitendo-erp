@@ -157,6 +157,7 @@ sub action_add_item {
     ->val('#add_item_qty_as_number', '')
     ->val('#add_item_sellprice_as_number', '')
     ->val('#add_item_discount_as_percent', '')
+    ->run('row_table_scroll_down')
     ->focus('#add_item_parts_id_name');
 
   $self->_js_redisplay_amounts_and_taxes;
