@@ -206,10 +206,6 @@ function recalc_amounts_and_taxes() {
   $.post("controller.pl", data, kivi.eval_json_result);
 }
 
-function display_linetotal(item_id, amount) {
-  $('#item_' + item_id).parents("tr").first().find('[name="linetotal"]').html(amount);
-}
-
 function row_table_scroll_down() {
   $('#row_table_scroll_id').scrollTop($('#row_table_scroll_id')[0].scrollHeight);
 }
