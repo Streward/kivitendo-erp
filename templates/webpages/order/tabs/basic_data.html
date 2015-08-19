@@ -76,6 +76,16 @@
               title_key='safe_name') %]</td>
           </tr>
 
+          [% IF SELF.cv == 'customer' %]
+          <tr>
+            <th align="right">[% 'Salesman' | $T8 %]</th>
+            <td>[% L.select_tag('order.employee_id',
+              SELF.all_employees,
+              default=(SELF.order.salesman_id ? SELF.order.salesman_id : SELF.current_employee_id),
+              title_key='safe_name') %]</td>
+          </tr>
+          [% END %]
+
           <tr>
             <th width="70%" align="right" nowrap>[% 'Order Number' | $T8 %]</th>
             <td>[% L.input_tag('order.ordnumber', SELF.order.ordnumber, size = 11) %]</td>
@@ -184,6 +194,8 @@ function reload_cv_dependend_selections() {
 }
 
 function add_item() {
+  if ($('#add_item_parts_id').val() == '') return;
+
   var data = $('#order_form').serialize();
   data += '&action=Order/add_item';
   data += '&type=' + $('#type').val();

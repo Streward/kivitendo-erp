@@ -127,6 +127,9 @@ sub action_add_item {
   my ($self) = @_;
 
   my $form_attr = $::form->{add_item};
+
+  return unless $form_attr->{parts_id};
+
   my $item      = SL::DB::OrderItem->new;
   $item->assign_attributes(%$form_attr);
 
