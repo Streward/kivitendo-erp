@@ -30,7 +30,18 @@
 
   [% L.hidden_tag('action', 'Order/dispatch') %]
 
-  [% L.submit_tag('action_update', LxERP.t8('Update')) %]
-  [% L.submit_tag('action_save', LxERP.t8('Save')) %]
+  [% L.button_tag('save()', LxERP.t8('Save')) %]</td>
 
 </form>
+
+
+<script type='text/javascript'>
+
+function save() {
+  var data = $('#order_form').serialize();
+  data += '&action=Order/save';
+
+  $.post("controller.pl", data, kivi.eval_json_result);
+}
+
+</script>

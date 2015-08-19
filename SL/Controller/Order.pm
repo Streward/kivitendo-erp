@@ -82,8 +82,14 @@ sub action_update {
 sub action_save {
   my ($self) = @_;
 
-  $self->_save();
+  my $errors = $self->_save();
 
+  if (scalar @{ $errors }) {
+    $self->js->flash('error', $_) foreach @{ $errors };
+    return $self->js->render($self);
+  }
+
+  flash_later('info', 'The order has been saved');
   my @redirect_params = (
     action => 'edit',
     type   => $self->type,
@@ -308,12 +314,15 @@ sub _recalc {
 sub _save {
   my ($self) = @_;
 
+  my $errors = [];
   my $db = $self->order->db;
 
   $db->do_transaction(
     sub {
       $self->order->save();
-  }) || die($db->error);
+  }) || push(@{$errors}, $db->error);
+
+  return $errors;
 }
 
 
